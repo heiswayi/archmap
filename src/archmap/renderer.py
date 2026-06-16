@@ -5,11 +5,13 @@ from __future__ import annotations
 import json
 import os
 
+from . import __version__
 from .model import ProjectMap
 
 _TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), "templates", "template.html")
 _DATA_MARKER = "/*__ARCHMAP_DATA__*/{}"
 _TITLE_MARKER = "__ARCHMAP_TITLE__"
+_VERSION_MARKER = "__ARCHMAP_VERSION__"
 
 
 def render(pmap: ProjectMap) -> str:
@@ -22,6 +24,7 @@ def render(pmap: ProjectMap) -> str:
 
     html = template.replace(_DATA_MARKER, payload)
     html = html.replace(_TITLE_MARKER, _escape_title(pmap.name))
+    html = html.replace(_VERSION_MARKER, __version__)
     return html
 
 

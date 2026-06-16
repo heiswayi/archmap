@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "archmap"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Generate a single self-contained architecture-map HTML from a project's source code."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -26,6 +26,9 @@ archmap = "archmap.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/heiswayi/archmap"
+
+[tool.setuptools.dynamic]
+version = { attr = "archmap.__version__" }
 
 [tool.setuptools]
 package-dir = { "" = "src" }
