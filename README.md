@@ -54,14 +54,14 @@ chmod +x archmap-linux-x86_64
 Installs into an isolated environment and puts `archmap` on your PATH:
 
 ```bash
-pipx install archmap                                       # from PyPI
+pipx install archmap-cli                                   # from PyPI (provides the `archmap` command)
 pipx install git+https://github.com/heiswayi/archmap       # from GitHub
 ```
 
 ### pip
 
 ```bash
-pip install archmap            # from PyPI
+pip install archmap-cli        # from PyPI (provides the `archmap` command)
 pip install .                  # from a source checkout
 ```
 

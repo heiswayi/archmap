@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "archmap"
+name = "archmap-cli"
 dynamic = ["version"]
 description = "Generate a single self-contained architecture-map HTML from a project's source code."
 readme = "README.md"
