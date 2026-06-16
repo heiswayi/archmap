@@ -29,7 +29,7 @@
     .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
     .header-badge {
       margin-left: auto; background: var(--bg-3); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--muted);
+      border-radius: 3px; padding: 4px 12px; font-size: 12px; color: var(--muted);
     }
 
     /* Tabs */
@@ -65,7 +65,7 @@
     .detail-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
     .detail-path {
       font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--blue);
-      background: var(--bg-3); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; word-break: break-all;
+      background: var(--bg-3); padding: 4px 8px; border-radius: 3px; margin-bottom: 12px; word-break: break-all;
     }
     .detail-desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; line-height: 1.6; }
     .detail-section { margin-bottom: 14px; }
@@ -87,34 +87,34 @@
 
     /* Overview */
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
-    .stat-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .stat-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 3px; padding: 16px; }
     .stat-num { font-size: 26px; font-weight: 700; }
     .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
     .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; }
     .bar-label { width: 120px; color: var(--muted); text-align: right; flex-shrink: 0; }
-    .bar-track { flex: 1; background: var(--bg-3); border-radius: 4px; height: 18px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 4px; }
+    .bar-track { flex: 1; background: var(--bg-3); border-radius: 3px; height: 18px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; }
     .bar-val { width: 40px; color: var(--muted); }
     .ov-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 1100px; }
     @media (max-width: 820px) { .ov-cols { grid-template-columns: 1fr; } }
 
     /* Layers */
     .layers-grid { display: flex; flex-direction: column; gap: 12px; max-width: 1100px; }
-    .layer-row { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+    .layer-row { border-radius: 3px; border: 1px solid var(--border); overflow: hidden; }
     .layer-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; user-select: none; }
     .layer-header:hover { filter: brightness(1.12); }
     .layer-icon { font-size: 20px; }
     .layer-name { font-weight: 700; font-size: 14px; }
     .layer-count {
       margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg-3);
-      border: 1px solid var(--border); border-radius: 10px; padding: 2px 8px;
+      border: 1px solid var(--border); border-radius: 3px; padding: 2px 8px;
     }
     .layer-chevron { font-size: 12px; color: var(--muted); margin-left: 8px; transition: transform .2s; }
     .layer-row.collapsed .layer-chevron { transform: rotate(-90deg); }
     .layer-body { background: var(--bg); padding: 12px 16px 16px; display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); }
     .layer-row.collapsed .layer-body { display: none; }
     .comp-card {
-      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 3px; padding: 10px 14px;
       cursor: pointer; transition: background .15s, border-color .15s, transform .1s; min-width: 190px; max-width: 280px;
     }
     .comp-card:hover { background: var(--bg-3); transform: translateY(-1px); }
@@ -126,7 +126,7 @@
     /* Dependencies */
     .dep-layout { max-width: 1100px; }
     .dep-card {
-      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 3px;
       padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border-color .15s, background .15s;
     }
     .dep-card:hover { border-color: var(--blue-d); }
@@ -137,11 +137,11 @@
     .dep-edges b { color: var(--cyan); }
 
     /* File System */
-    .fs-tree { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; max-width: 1100px; }
+    .fs-tree { background: var(--bg-2); border: 1px solid var(--border); border-radius: 3px; padding: 16px; max-width: 1100px; }
     .fs-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
     .tree-node {
       font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12.5px; line-height: 1.9;
-      white-space: nowrap; cursor: pointer; border-radius: 4px; padding: 0 6px;
+      white-space: nowrap; cursor: pointer; border-radius: 3px; padding: 0 6px;
     }
     .tree-node:hover { background: var(--bg-3); }
     .tree-node.selected { background: rgba(88,166,255,.1); }
@@ -156,7 +156,7 @@
 
     /* Component table */
     .comp-search {
-      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 3px;
       padding: 8px 14px; color: var(--text); font-size: 14px; width: 100%;
       margin-bottom: 16px; outline: none;
     }
@@ -173,7 +173,7 @@
     .comp-table tr:hover td { background: var(--bg-2); }
     .comp-table tr.selected td { background: rgba(88,166,255,.06); }
     .comp-table .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--cyan); word-break: break-all; }
-    .layer-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .layer-pill { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; }
 
     ::-webkit-scrollbar { width: 7px; height: 7px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -184,7 +184,7 @@
       position: fixed; bottom: 10px; right: 14px; z-index: 50;
       font-size: 11px; color: var(--muted);
       background: var(--bg-2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 4px 12px; opacity: .85;
+      border-radius: 3px; padding: 4px 12px; opacity: .85;
     }
     .credit:hover { opacity: 1; }
     .credit a { color: var(--blue); text-decoration: none; font-weight: 600; }
