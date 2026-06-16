@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>__ARCHMAP_TITLE__ — Architecture Map</title>
+  <style>
+    :root {
+      --bg: #0d1117; --bg-2: #161b22; --bg-3: #21262d; --bg-4: #2d333b;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --blue: #58a6ff; --blue-d: #1f6feb; --green: #3fb950; --green-d: #238636;
+      --yellow: #e3b341; --orange: #f0883e; --red: #f85149; --purple: #bc8cff;
+      --teal: #39d353; --pink: #f778ba; --cyan: #79c0ff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+      min-height: 100vh; font-size: 14px; line-height: 1.5;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 20px 32px; display: flex; align-items: center; gap: 16px;
+    }
+    .header-icon { font-size: 32px; }
+    .header-title { font-size: 22px; font-weight: 700; color: var(--text); }
+    .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .header-badge {
+      margin-left: auto; background: var(--bg-3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--muted);
+    }
+
+    /* Tabs */
+    .tabs {
+      background: var(--bg-2); border-bottom: 1px solid var(--border);
+      padding: 0 32px; display: flex; gap: 0; overflow-x: auto;
+    }
+    .tab-btn {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 500;
+      padding: 12px 16px; white-space: nowrap; transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
+
+    /* Layout */
+    .main { display: flex; height: calc(100vh - 105px); overflow: hidden; }
+    .content { flex: 1; overflow: auto; padding: 24px 32px; }
+    .sidebar {
+      width: 360px; min-width: 300px; background: var(--bg-2);
+      border-left: 1px solid var(--border); overflow: auto; padding: 20px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .section-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .section-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* Detail panel */
+    .detail-empty { text-align: center; color: var(--muted); margin-top: 60px; font-size: 13px; }
+    .detail-empty .de-icon { font-size: 40px; margin-bottom: 10px; }
+    .detail-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .detail-path {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--blue);
+      background: var(--bg-3); padding: 4px 8px; border-radius: 4px; margin-bottom: 12px; word-break: break-all;
+    }
+    .detail-desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; line-height: 1.6; }
+    .detail-section { margin-bottom: 14px; }
+    .detail-section-title {
+      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; background: var(--bg-3);
+      border: 1px solid var(--border); border-radius: 3px; padding: 2px 6px; color: var(--cyan);
+    }
+    .tag.green { color: var(--green); } .tag.yellow { color: var(--yellow); }
+    .tag.orange { color: var(--orange); } .tag.purple { color: var(--purple); }
+    .tag.pink { color: var(--pink); }
+    .tag.link { cursor: pointer; } .tag.link:hover { border-color: var(--blue); }
+    .meta-row { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .meta-row b { color: var(--text); }
+
+    /* Overview */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+    .stat-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .stat-num { font-size: 26px; font-weight: 700; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; }
+    .bar-label { width: 120px; color: var(--muted); text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; background: var(--bg-3); border-radius: 4px; height: 18px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; }
+    .bar-val { width: 40px; color: var(--muted); }
+    .ov-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: 1100px; }
+    @media (max-width: 820px) { .ov-cols { grid-template-columns: 1fr; } }
+
+    /* Layers */
+    .layers-grid { display: flex; flex-direction: column; gap: 12px; max-width: 1100px; }
+    .layer-row { border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+    .layer-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; user-select: none; }
+    .layer-header:hover { filter: brightness(1.12); }
+    .layer-icon { font-size: 20px; }
+    .layer-name { font-weight: 700; font-size: 14px; }
+    .layer-count {
+      margin-left: auto; font-size: 11px; color: var(--muted); background: var(--bg-3);
+      border: 1px solid var(--border); border-radius: 10px; padding: 2px 8px;
+    }
+    .layer-chevron { font-size: 12px; color: var(--muted); margin-left: 8px; transition: transform .2s; }
+    .layer-row.collapsed .layer-chevron { transform: rotate(-90deg); }
+    .layer-body { background: var(--bg); padding: 12px 16px 16px; display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); }
+    .layer-row.collapsed .layer-body { display: none; }
+    .comp-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+      cursor: pointer; transition: background .15s, border-color .15s, transform .1s; min-width: 190px; max-width: 280px;
+    }
+    .comp-card:hover { background: var(--bg-3); transform: translateY(-1px); }
+    .comp-card.selected { border-color: var(--blue); background: rgba(88,166,255,.06); }
+    .cc-name { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+    .cc-path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; color: var(--muted); word-break: break-all; }
+    .cc-meta { font-size: 11px; margin-top: 4px; color: var(--muted); }
+
+    /* Dependencies */
+    .dep-layout { max-width: 1100px; }
+    .dep-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: border-color .15s, background .15s;
+    }
+    .dep-card:hover { border-color: var(--blue-d); }
+    .dep-card.selected { border-color: var(--blue); background: rgba(88,166,255,.06); }
+    .dep-name { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+    .dep-path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 10px; color: var(--muted); }
+    .dep-edges { font-size: 11px; color: var(--muted); margin-top: 6px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .dep-edges b { color: var(--cyan); }
+
+    /* File System */
+    .fs-tree { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; max-width: 1100px; }
+    .fs-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .tree-node {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12.5px; line-height: 1.9;
+      white-space: nowrap; cursor: pointer; border-radius: 4px; padding: 0 6px;
+    }
+    .tree-node:hover { background: var(--bg-3); }
+    .tree-node.selected { background: rgba(88,166,255,.1); }
+    .tree-children.collapsed { display: none; }
+    .tn-dir { color: var(--blue); font-weight: 600; }
+    .tn-py { color: var(--green); } .tn-js, .tn-ts { color: var(--yellow); }
+    .tn-yaml, .tn-yml, .tn-toml { color: var(--yellow); }
+    .tn-sh { color: var(--orange); } .tn-md { color: var(--cyan); }
+    .tn-default { color: var(--text); }
+    .tn-caret { color: var(--muted); display: inline-block; width: 12px; transition: transform .15s; }
+    .tn-caret.collapsed { transform: rotate(-90deg); }
+
+    /* Component table */
+    .comp-search {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 8px 14px; color: var(--text); font-size: 14px; width: 100%;
+      margin-bottom: 16px; outline: none;
+    }
+    .comp-search:focus { border-color: var(--blue-d); }
+    .comp-search::placeholder { color: var(--muted); }
+    .comp-table { width: 100%; border-collapse: collapse; max-width: 1100px; }
+    .comp-table th {
+      text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .8px; color: var(--muted);
+      border-bottom: 1px solid var(--border); position: sticky; top: -24px; background: var(--bg);
+    }
+    .comp-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+    .comp-table tr { cursor: pointer; transition: background .1s; }
+    .comp-table tr:hover td { background: var(--bg-2); }
+    .comp-table tr.selected td { background: rgba(88,166,255,.06); }
+    .comp-table .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--cyan); word-break: break-all; }
+    .layer-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">🗺️</span>
+  <div>
+    <div class="header-title" id="hdr-title">Architecture Map</div>
+    <div class="header-sub" id="hdr-sub"></div>
+  </div>
+  <div class="header-badge" id="hdr-badge"></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+  <button class="tab-btn" data-tab="layers">🏗️ Architecture Layers</button>
+  <button class="tab-btn" data-tab="deps">🔗 Dependencies</button>
+  <button class="tab-btn" data-tab="filesystem">📁 File System</button>
+  <button class="tab-btn" data-tab="components">🔎 Component Reference</button>
+</div>
+
+<div class="main">
+  <div class="content">
+    <div class="tab-panel active" id="tab-overview">
+      <div class="section-title">Project Overview</div>
+      <div class="section-sub" id="ov-sub"></div>
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="ov-cols">
+        <div>
+          <div class="detail-section-title">Languages</div>
+          <div id="lang-bars" style="margin-top:10px"></div>
+        </div>
+        <div>
+          <div class="detail-section-title">Layers</div>
+          <div id="layer-bars" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-layers">
+      <div class="section-title">Architecture Layers</div>
+      <div class="section-sub">Click any component to view details. Click a layer header to collapse/expand.</div>
+      <div class="layers-grid" id="layers-grid"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-deps">
+      <div class="section-title">Internal Dependencies</div>
+      <div class="section-sub">Import relationships resolved between in-project files. Click a file to inspect its edges.</div>
+      <div class="dep-layout" id="dep-layout"></div>
+    </div>
+
+    <div class="tab-panel" id="tab-filesystem">
+      <div class="section-title">File System Layout</div>
+      <div class="section-sub">Project structure as scanned by archmap. Click a file to view its details.</div>
+      <div class="fs-tree">
+        <div class="fs-title">🗂️ <span id="fs-root-name">Repository</span></div>
+        <div id="fs-tree-body"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-components">
+      <div class="section-title">Component Reference</div>
+      <div class="section-sub">All scanned source files. Click a row to view details.</div>
+      <input class="comp-search" id="comp-search" placeholder="🔍  Search by name, path, layer, or description…" type="text">
+      <table class="comp-table">
+        <thead><tr><th>Component</th><th>Layer</th><th>Path</th><th>Lines</th><th>Description</th></tr></thead>
+        <tbody id="comp-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sidebar" id="sidebar">
+    <div id="detail-panel">
+      <div class="detail-empty">
+        <div class="de-icon">👆</div>
+        <div>Click any component<br>to see details</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ARCHMAP = /*__ARCHMAP_DATA__*/{};
+
+const LAYER_MAP = Object.fromEntries(ARCHMAP.layers.map(l => [l.id, l]));
+const COMP_MAP = Object.fromEntries(ARCHMAP.components.map(c => [c.id, c]));
+let selectedId = null;
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, m => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]
+  ));
+}
+
+// ── Header ──
+function renderHeader() {
+  document.getElementById('hdr-title').textContent = ARCHMAP.meta.name + ' — Architecture Map';
+  document.getElementById('hdr-sub').textContent = ARCHMAP.meta.subtitle || '';
+  const s = ARCHMAP.stats;
+  document.getElementById('hdr-badge').textContent =
+    `${s.files} files · ${s.lines.toLocaleString()} lines`;
+  document.title = ARCHMAP.meta.name + ' — Architecture Map';
+}
+
+// ── Overview ──
+function renderOverview() {
+  const s = ARCHMAP.stats;
+  document.getElementById('ov-sub').textContent =
+    `Generated by archmap from ${esc(ARCHMAP.meta.root)}`;
+
+  const cards = [
+    ['Files', s.files], ['Lines', s.lines.toLocaleString()],
+    ['Layers', ARCHMAP.layers.length], ['Classes', s.classes],
+    ['Functions', s.functions], ['Dep Edges', s.edges],
+  ];
+  document.getElementById('stat-grid').innerHTML = cards.map(([label, num]) => `
+    <div class="stat-card"><div class="stat-num">${num}</div><div class="stat-label">${label}</div></div>
+  `).join('');
+
+  const palette = ['#58a6ff', '#3fb950', '#e3b341', '#f0883e', '#bc8cff', '#f778ba', '#79c0ff', '#39d353', '#f85149'];
+  const langs = s.languages;
+  const maxLang = Math.max(1, ...langs.map(l => l.count));
+  document.getElementById('lang-bars').innerHTML = langs.map((l, i) => `
+    <div class="bar-row">
+      <div class="bar-label">${esc(l.name)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(l.count / maxLang * 100).toFixed(1)}%;background:${palette[i % palette.length]}"></div></div>
+      <div class="bar-val">${l.count}</div>
+    </div>`).join('');
+
+  const layerEntries = ARCHMAP.layers
+    .map(l => ({ l, n: s.layerCounts[l.id] || 0 }))
+    .sort((a, b) => b.n - a.n);
+  const maxLayer = Math.max(1, ...layerEntries.map(e => e.n));
+  document.getElementById('layer-bars').innerHTML = layerEntries.map(e => `
+    <div class="bar-row" style="cursor:pointer" onclick="switchTab('layers')">
+      <div class="bar-label">${e.l.icon} ${esc(e.l.name)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(e.n / maxLayer * 100).toFixed(1)}%;background:${e.l.color}"></div></div>
+      <div class="bar-val">${e.n}</div>
+    </div>`).join('');
+}
+
+// ── Layers ──
+function renderLayers() {
+  const byLayer = {};
+  ARCHMAP.components.forEach(c => (byLayer[c.layer] = byLayer[c.layer] || []).push(c));
+  document.getElementById('layers-grid').innerHTML = ARCHMAP.layers.map(layer => {
+    const comps = (byLayer[layer.id] || []).sort((a, b) => a.path.localeCompare(b.path));
+    return `
+      <div class="layer-row" id="layer-${layer.id}">
+        <div class="layer-header" style="background:${layer.bg}" onclick="toggleLayer('${layer.id}')">
+          <span class="layer-icon">${layer.icon}</span>
+          <span class="layer-name" style="color:${layer.color}">${esc(layer.name)}</span>
+          <span class="layer-count">${comps.length} component${comps.length !== 1 ? 's' : ''}</span>
+          <span class="layer-chevron">▼</span>
+        </div>
+        <div class="layer-body">
+          ${comps.map(c => `
+            <div class="comp-card" id="cc-${c.id}" onclick="showDetail('${c.id}')">
+              <div class="cc-name">${c.emoji} ${esc(c.name)}</div>
+              <div class="cc-path">${esc(c.path)}</div>
+              <div class="cc-meta">${esc(c.language)} · ${c.lines} lines</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleLayer(id) {
+  const el = document.getElementById('layer-' + id);
+  if (el) el.classList.toggle('collapsed');
+}
+
+// ── Dependencies ──
+function renderDeps() {
+  const linked = ARCHMAP.components
+    .filter(c => c.deps.length || c.usedBy.length)
+    .sort((a, b) => (b.usedBy.length - a.usedBy.length) || (b.deps.length - a.deps.length));
+  const container = document.getElementById('dep-layout');
+  if (!linked.length) {
+    container.innerHTML = '<div class="detail-empty" style="margin-top:30px">No internal import relationships were resolved.</div>';
+    return;
+  }
+  container.innerHTML = linked.map(c => `
+    <div class="dep-card" id="dep-${c.id}" onclick="showDetail('${c.id}')">
+      <div class="dep-name">${c.emoji} ${esc(c.name)}
+        <span class="layer-pill" style="background:${LAYER_MAP[c.layer].bg};color:${LAYER_MAP[c.layer].color}">${esc(LAYER_MAP[c.layer].name)}</span>
+      </div>
+      <div class="dep-path">${esc(c.path)}</div>
+      <div class="dep-edges"><span>depends on <b>${c.deps.length}</b></span><span>used by <b>${c.usedBy.length}</b></span></div>
+    </div>`).join('');
+}
+
+// ── File System ──
+function renderTree() {
+  document.getElementById('fs-root-name').textContent = ARCHMAP.tree.name || 'Repository';
+  document.getElementById('fs-tree-body').innerHTML = renderTreeChildren(ARCHMAP.tree.children || [], 0);
+}
+
+function renderTreeChildren(nodes, depth) {
+  return nodes.map(n => {
+    const pad = 12 + depth * 18;
+    if (n.dir) {
+      const cid = 'd-' + Math.random().toString(36).slice(2, 9);
+      return `
+        <div class="tree-node tn-dir" style="padding-left:${pad}px" onclick="toggleDir('${cid}', this)">
+          <span class="tn-caret">▾</span> 📁 ${esc(n.name)}/
+        </div>
+        <div class="tree-children" id="${cid}">${renderTreeChildren(n.children || [], depth + 1)}</div>`;
+    }
+    const cls = 'tn-' + (n.ext || 'default');
+    return `<div class="tree-node ${cls}" id="tn-${n.comp}" style="padding-left:${pad + 14}px" onclick="showDetail('${n.comp}')">📄 ${esc(n.name)}</div>`;
+  }).join('');
+}
+
+function toggleDir(id, header) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('collapsed');
+  const caret = header.querySelector('.tn-caret');
+  if (caret) caret.classList.toggle('collapsed');
+}
+
+// ── Components table ──
+function renderComponents() {
+  renderCompTable('');
+  document.getElementById('comp-search').addEventListener('input', e => renderCompTable(e.target.value.toLowerCase()));
+}
+
+function renderCompTable(filter) {
+  const rows = (filter
+    ? ARCHMAP.components.filter(c =>
+        c.name.toLowerCase().includes(filter) || c.path.toLowerCase().includes(filter) ||
+        c.desc.toLowerCase().includes(filter) || c.layer.toLowerCase().includes(filter) ||
+        (LAYER_MAP[c.layer] && LAYER_MAP[c.layer].name.toLowerCase().includes(filter)))
+    : ARCHMAP.components
+  ).slice().sort((a, b) => a.path.localeCompare(b.path));
+
+  document.getElementById('comp-tbody').innerHTML = rows.map(c => {
+    const layer = LAYER_MAP[c.layer];
+    return `
+      <tr id="ct-${c.id}" onclick="showDetail('${c.id}')">
+        <td><strong>${c.emoji} ${esc(c.name)}</strong></td>
+        <td><span class="layer-pill" style="background:${layer.bg};color:${layer.color}">${esc(layer.name)}</span></td>
+        <td class="mono">${esc(c.path)}</td>
+        <td style="color:var(--muted)">${c.lines}</td>
+        <td style="color:var(--muted)">${esc(c.desc.slice(0, 90))}${c.desc.length > 90 ? '…' : ''}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ── Detail panel ──
+function showDetail(id) {
+  const comp = COMP_MAP[id];
+  if (!comp) return;
+  if (selectedId) document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  selectedId = id;
+  ['cc', 'ct', 'dep', 'tn'].forEach(p => {
+    const el = document.getElementById(`${p}-${id}`);
+    if (el) el.classList.add('selected');
+  });
+
+  const layer = LAYER_MAP[comp.layer];
+  let html = `
+    <div class="detail-title"><span>${comp.emoji}</span><span>${esc(comp.name)}</span></div>
+    <div class="detail-path">${esc(comp.path)}</div>
+    <div class="detail-desc">${esc(comp.desc)}</div>
+    <div class="meta-row">
+      <span>Lang <b>${esc(comp.language)}</b></span>
+      <span>Lines <b>${comp.lines}</b></span>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Layer</div>
+      <span class="layer-pill" style="background:${layer.bg};color:${layer.color};padding:4px 10px">${layer.icon} ${esc(layer.name)}</span>
+    </div>`;
+
+  html += tagSection('Classes', comp.classes, 'purple');
+  html += tagSection('Functions', comp.functions, 'green');
+  html += tagSection('Methods', comp.methods, '');
+  html += tagSection('Imports', comp.imports, 'orange');
+  html += linkSection('Depends On', comp.deps);
+  html += linkSection('Used By', comp.usedBy);
+
+  if (comp.notes && comp.notes.length) {
+    html += `<hr class="divider"><div class="detail-section"><div class="detail-section-title">Notes</div>`;
+    comp.notes.forEach(n => html += `<div style="font-size:12px;color:var(--muted);margin-bottom:5px">• ${esc(n)}</div>`);
+    html += `</div>`;
+  }
+  document.getElementById('detail-panel').innerHTML = html;
+}
+
+function tagSection(title, items, cls) {
+  if (!items || !items.length) return '';
+  const shown = items.slice(0, 40);
+  return `<div class="detail-section"><div class="detail-section-title">${title} (${items.length})</div>
+    <div class="tag-list">${shown.map(i => `<span class="tag ${cls}">${esc(i)}</span>`).join('')}</div></div>`;
+}
+
+function linkSection(title, ids) {
+  if (!ids || !ids.length) return '';
+  return `<div class="detail-section"><div class="detail-section-title">${title} (${ids.length})</div>
+    <div class="tag-list">${ids.map(id => {
+      const c = COMP_MAP[id];
+      if (!c) return '';
+      return `<span class="tag link" onclick="showDetail('${id}')">${c.emoji} ${esc(c.name)}</span>`;
+    }).join('')}</div></div>`;
+}
+
+// ── Tabs ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tab);
+  if (panel) panel.classList.add('active');
+}
+document.querySelectorAll('.tab-btn').forEach(btn =>
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+// ── Init ──
+renderHeader();
+renderOverview();
+renderLayers();
+renderDeps();
+renderTree();
+renderComponents();
+</script>
+</body>
+</html>
