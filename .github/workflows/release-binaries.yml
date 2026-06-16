@@ -1,0 +1,88 @@
+name: Release binaries
+
+# Build standalone single-file executables for Linux, macOS, and Windows
+# whenever a version tag is pushed, and attach them to a GitHub Release.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            asset: archmap-linux-x86_64
+          - os: macos-latest
+            target: macos-arm64
+            asset: archmap-macos-arm64
+          - os: macos-13
+            target: macos-x86_64
+            asset: archmap-macos-x86_64
+          - os: windows-latest
+            target: windows-x86_64
+            asset: archmap-windows-x86_64.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pyinstaller
+
+      - name: Build binary
+        run: pyinstaller archmap.spec
+
+      - name: Rename binary (unix)
+        if: runner.os != 'Windows'
+        run: mv dist/archmap "dist/${{ matrix.asset }}"
+
+      - name: Rename binary (windows)
+        if: runner.os == 'Windows'
+        run: Rename-Item dist/archmap.exe "${{ matrix.asset }}"
+        shell: pwsh
+
+      - name: Smoke test (unix)
+        if: runner.os != 'Windows'
+        run: "./dist/${{ matrix.asset }} --version"
+
+      - name: Smoke test (windows)
+        if: runner.os == 'Windows'
+        run: "dist\\${{ matrix.asset }} --version"
+        shell: cmd
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: dist/${{ matrix.asset }}
+
+  release:
+    name: Attach to Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

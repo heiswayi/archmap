@@ -25,13 +25,47 @@ Everything is embedded in a single HTML file (data is inlined as JSON), so it is
 
 ## Installation
 
-From source (zero runtime dependencies — pure Python standard library):
+archmap is pure Python with **zero runtime dependencies**. Pick whichever fits.
+
+### Standalone binary (no Python needed)
+
+Download the executable for your platform from the [latest release](https://github.com/heiswayi/archmap/releases/latest), then run it directly:
+
+| Platform | Asset |
+| --- | --- |
+| Linux (x86_64) | `archmap-linux-x86_64` |
+| macOS (Apple Silicon) | `archmap-macos-arm64` |
+| macOS (Intel) | `archmap-macos-x86_64` |
+| Windows (x86_64) | `archmap-windows-x86_64.exe` |
 
 ```bash
-pip install .
+# Linux / macOS
+chmod +x archmap-linux-x86_64
+./archmap-linux-x86_64 /path/to/project
 ```
 
-Requires Python 3.8+.
+```powershell
+# Windows
+.\archmap-windows-x86_64.exe C:\path\to\project
+```
+
+### pipx (recommended if you have Python 3.8+)
+
+Installs into an isolated environment and puts `archmap` on your PATH:
+
+```bash
+pipx install archmap                                       # from PyPI
+pipx install git+https://github.com/heiswayi/archmap       # from GitHub
+```
+
+### pip
+
+```bash
+pip install archmap            # from PyPI
+pip install .                  # from a source checkout
+```
+
+Requires Python 3.8+ (except the standalone binaries, which bundle their own runtime).
 
 ## Usage
 
