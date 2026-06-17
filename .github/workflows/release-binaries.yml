@@ -1,6 +1,6 @@
 name: Release binaries
 
-# Build standalone single-file executables for Linux, macOS, and Windows
+# Build standalone single-file executables for Linux and Windows
 # whenever a version tag is pushed, and attach them to a GitHub Release.
 on:
   push:
@@ -22,12 +22,6 @@ jobs:
           - os: ubuntu-latest
             target: linux-x86_64
             asset: archmap-linux-x86_64
-          - os: macos-latest
-            target: macos-arm64
-            asset: archmap-macos-arm64
-          - os: macos-13
-            target: macos-x86_64
-            asset: archmap-macos-x86_64
           - os: windows-latest
             target: windows-x86_64
             asset: archmap-windows-x86_64.exe
